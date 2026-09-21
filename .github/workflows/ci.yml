@@ -20,8 +20,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Pinned, so a runner image update cannot turn the build red on its own.
       - name: shellcheck
-        run: shellcheck install.sh bin/claude-bridge
+        env:
+          VERSION: v0.11.0
+        run: |
+          curl -fsSL "https://github.com/koalaman/shellcheck/releases/download/$VERSION/shellcheck-$VERSION.linux.x86_64.tar.xz" \
+            | tar -xJ
+          "shellcheck-$VERSION/shellcheck" --version
+          "shellcheck-$VERSION/shellcheck" install.sh bin/claude-bridge
 
       - name: hadolint
         uses: hadolint/hadolint-action@v3.1.0
@@ -38,9 +45,13 @@ jobs:
           docker run -d --name ci \
             -e BRIDGE_SECRET_KEY=ci-secret-key-long-enough-for-the-check-01 \
             -p 8787:8787 claude-api-bridge:ci
-          for i in $(seq 1 30); do
-            curl -fsS http://127.0.0.1:8787/health && break
+          for _ in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8787/health; then
+              healthy=1
+              break
+            fi
             sleep 2
           done
           docker logs ci
           docker rm -f ci
+          test -n "${healthy:-}"

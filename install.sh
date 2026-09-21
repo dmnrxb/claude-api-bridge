@@ -117,7 +117,10 @@ command -v openssl >/dev/null 2>&1 || die "openssl is required"
 
 step "Putting the files in place"
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd || true)"
+SCRIPT_DIR="$(
+  source_dir="$(dirname "${BASH_SOURCE[0]:-$0}")"
+  if cd "$source_dir" 2>/dev/null; then pwd; fi
+)"
 
 if [ -n "$SCRIPT_DIR" ] && [ -f "$SCRIPT_DIR/Dockerfile" ] && [ -f "$SCRIPT_DIR/docker-compose.yml" ]; then
   if [ "$SCRIPT_DIR" != "$INSTALL_DIR" ]; then

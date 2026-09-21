@@ -1,0 +1,7 @@
+# Pinning apt versions breaks the build as soon as Debian moves the package on.
+# The Claude Code version is a build argument, which hadolint cannot resolve.
+ignored:
+  - DL3008
+  - DL3016
+
+failure-threshold: warning
