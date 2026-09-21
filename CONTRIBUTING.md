@@ -58,6 +58,19 @@ CI runs all of these.
 by hand. Change both when you change one, they are the light and dark version
 of the same picture.
 
+## Commit messages
+
+A type in brackets, then a short line in lower case. Keep the body short too,
+bullet points are fine.
+
+```
+(feat) always build with the newest Claude Code
+(bug)  fix the CI lint job
+(docs) explain the account fallback
+(test) cover the streaming path
+(chore) bump the base image
+```
+
 ## Pull requests
 
 - One topic per pull request.
