@@ -6,7 +6,7 @@ All notable changes are listed here. The format follows
 
 ## [Unreleased]
 
-## [0.1.0]
+## [0.1.0] - 2026-09-22
 
 First release.
 
@@ -23,3 +23,8 @@ First release.
   Caddy if not, and installs the `claude-bridge` command.
 - Docker image on Node 24, built with the newest Claude Code, running as a non
   root user.
+- Published image at `ghcr.io/dmnrxb/claude-api-bridge`, rebuilt nightly so it
+  does not fall behind the CLI.
+
+[unreleased]: https://github.com/dmnrxb/claude-api-bridge/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/dmnrxb/claude-api-bridge/releases/tag/v0.1.0

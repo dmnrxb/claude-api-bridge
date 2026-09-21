@@ -1,0 +1,57 @@
+name: Image
+
+on:
+  push:
+    tags: ['v*']
+  schedule:
+    # Nightly, so the published image does not fall behind Claude Code.
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: newest Claude Code
+        id: cli
+        run: |
+          version="$(curl -fsSL https://registry.npmjs.org/@anthropic-ai/claude-code/latest \
+            | grep -o '"version":"[^"]*"' | head -1 | cut -d'"' -f4)"
+          test -n "$version"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "building with Claude Code $version"
+
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - uses: docker/metadata-action@v5
+        id: meta
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: CLAUDE_CODE_VERSION=${{ steps.cli.outputs.version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

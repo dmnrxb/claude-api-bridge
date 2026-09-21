@@ -63,6 +63,29 @@ To remove everything again:
 sudo ./install.sh --uninstall
 ```
 
+## Prebuilt image
+
+`install.sh` builds the image on your server. That takes a couple of minutes
+and always gets the newest Claude Code.
+
+If you would rather not build, there is a published image. It is rebuilt every
+night, so it is current but not always newest:
+
+```
+ghcr.io/dmnrxb/claude-api-bridge:latest
+```
+
+To use it, swap the `build:` block in `docker-compose.yml` for the image:
+
+```yaml
+services:
+  bridge:
+    image: ghcr.io/dmnrxb/claude-api-bridge:latest
+```
+
+Update it with `docker compose pull && docker compose up -d` instead of
+`claude-bridge rebuild`.
+
 ## The token
 
 Claude Code needs a login. A server has no browser, so create a token on a

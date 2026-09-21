@@ -71,6 +71,20 @@ bullet points are fine.
 (chore) bump the base image
 ```
 
+## Releasing
+
+1. Move the `Unreleased` entries into a new version section with today's date.
+2. Bump `version` in `package.json`.
+3. Tag it.
+
+```bash
+git tag v0.2.0
+git push --tags
+```
+
+The tag builds the image for amd64 and arm64, pushes it to ghcr.io, and opens a
+GitHub release with that changelog section as the notes.
+
 ## Pull requests
 
 - One topic per pull request.
