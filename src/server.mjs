@@ -63,8 +63,7 @@ async function readBody(req) {
   }
 }
 
-// `run` is injected so the routes can be exercised without a Claude Code
-// process on the machine.
+// `run` is injected so the tests need no Claude Code on the machine.
 export function createApp({ store, gate, run = runClaude }) {
   async function handleChat(req, res) {
     const started = Date.now();
@@ -132,8 +131,7 @@ export function createApp({ store, gate, run = runClaude }) {
               : undefined,
           });
         } catch (err) {
-          // Once bytes are on the wire the request cannot be replayed on
-          // another account without repeating text the caller already has.
+          // Bytes are already out, so another account would repeat text.
           if (emitted) err.accountFailure = null;
           err.accountId = account.id;
           throw err;
@@ -172,7 +170,7 @@ export function createApp({ store, gate, run = runClaude }) {
       else log.warn('request rejected', { key: key.name, status, error: redact(err.message) });
 
       if (headersSent) {
-        // The stream already started, so the error travels inside it.
+        // The stream already started, so the error goes inside it.
         res.write(sse(errorBody(redact(err.message), { type: typeOf(status) })));
         res.write('data: [DONE]\n\n');
         res.end();
@@ -247,7 +245,7 @@ export function start() {
   const gate = new Gate();
   const server = createServer(createApp({ store, gate }));
 
-  // A Claude Code run can take minutes. Let the sockets outlive the default.
+  // A run can take minutes, so the sockets have to outlive the default.
   server.requestTimeout = 0;
   server.headersTimeout = 60_000;
   server.keepAliveTimeout = 75_000;

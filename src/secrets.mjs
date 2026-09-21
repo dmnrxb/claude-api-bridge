@@ -2,10 +2,8 @@ import {
   createCipheriv, createDecipheriv, createHash, randomBytes, scryptSync, timingSafeEqual,
 } from 'node:crypto';
 
-// Account tokens are encrypted before they reach the database so a copy of the
-// db file, a backup or a stray volume mount does not hand them over in plain
-// text. Anyone who can read BRIDGE_SECRET_KEY can decrypt them, so this
-// protects the file, not the host.
+// Account tokens are encrypted so the database file alone does not give them
+// away. Whoever can read BRIDGE_SECRET_KEY can still decrypt them.
 
 const KEY_CACHE = new Map();
 
@@ -35,8 +33,7 @@ export function decryptToken(blob, secret) {
   return Buffer.concat([decipher.update(Buffer.from(body, 'base64')), decipher.final()]).toString('utf8');
 }
 
-// API keys are only ever stored as a hash. The full key is shown once, when it
-// is created, and cannot be recovered afterwards.
+// API keys are stored as a hash and shown once.
 
 export function newApiKey() {
   return `cb-${randomBytes(24).toString('base64url')}`;
@@ -57,7 +54,7 @@ export function safeEqual(a, b) {
   return timingSafeEqual(left, right);
 }
 
-// Never let a token reach a log line or an error message.
+// Keep tokens out of logs and error messages.
 export function redact(text) {
   if (!text) return text;
   return String(text)

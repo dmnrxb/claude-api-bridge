@@ -1,5 +1,4 @@
-// All runtime settings come from the environment. The installer writes them
-// into .env, docker compose passes that file to the container.
+// Settings come from the environment. The installer writes .env.
 
 function int(name, fallback) {
   const raw = process.env[name];
@@ -25,18 +24,17 @@ export const config = {
   host: str('BRIDGE_HOST', '0.0.0.0'),
   dataDir: str('BRIDGE_DATA_DIR', '/data'),
 
-  // Encrypts account tokens at rest. The installer generates one.
+  // Encrypts the account tokens in the database.
   secretKey: str('BRIDGE_SECRET_KEY', ''),
 
-  // How many Claude Code processes may run at the same time, and how long a
-  // request may sit in the queue before the bridge gives up.
+  // Parallel Claude Code runs, and how long a request waits for a free slot.
   maxConcurrent: int('BRIDGE_MAX_CONCURRENT', 4),
   queueTimeoutMs: int('BRIDGE_QUEUE_TIMEOUT_MS', 30_000),
 
-  // Hard limit on one Claude Code run.
+  // Hard stop for one run.
   requestTimeoutMs: int('BRIDGE_REQUEST_TIMEOUT_MS', 600_000),
 
-  // Where the Claude Code binary lives and what it is allowed to touch.
+  // The binary, and what it may use.
   claudeBin: str('BRIDGE_CLAUDE_BIN', 'claude'),
   allowedTools: list('BRIDGE_ALLOWED_TOOLS', ['WebSearch', 'WebFetch']),
   disallowedTools: list('BRIDGE_DISALLOWED_TOOLS', [
@@ -45,15 +43,13 @@ export const config = {
 
   defaultModel: str('BRIDGE_DEFAULT_MODEL', 'claude-opus-5'),
 
-  // What to do with a model name the bridge does not know.
-  //   map   fall back to the default model, report it back in the response
-  //   error answer with 400 and list the known names
+  // Unknown model name: "map" uses the default, "error" answers 400.
   unknownModel: str('BRIDGE_UNKNOWN_MODEL', 'map'),
 
   // How long an account stays parked after it failed.
   cooldownMs: int('BRIDGE_ACCOUNT_COOLDOWN_MS', 900_000),
 
-  // Keep request rows for this many days. 0 keeps them forever.
+  // 0 keeps request rows forever.
   retentionDays: int('BRIDGE_RETENTION_DAYS', 90),
 
   logLevel: str('BRIDGE_LOG_LEVEL', 'info'),

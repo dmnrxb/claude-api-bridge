@@ -54,14 +54,9 @@ CI runs all of these.
 
 ## The diagram
 
-`docs/architecture.svg` and `docs/architecture-dark.svg` are generated. Edit
-`scripts/build-diagram.mjs`, then:
-
-```bash
-node scripts/build-diagram.mjs
-```
-
-Commit both files.
+`docs/architecture.svg` and `docs/architecture-dark.svg` are plain SVG, edited
+by hand. Change both when you change one, they are the light and dark version
+of the same picture.
 
 ## Pull requests
 

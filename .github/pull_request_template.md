@@ -6,4 +6,4 @@
 
 - [ ] `npm test` passes
 - [ ] README updated if a default, a flag or an endpoint changed
-- [ ] `docs/architecture*.svg` regenerated if the flow changed
+- [ ] both `docs/architecture*.svg` updated if the flow changed

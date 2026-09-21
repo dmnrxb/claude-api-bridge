@@ -1,13 +1,11 @@
-# Node 24 is the first line where node:sqlite runs without a command line flag,
-# which is why the bridge needs no npm dependencies at all.
+# Node 24 runs node:sqlite without a flag, so the bridge needs no npm packages.
 FROM node:24-slim
 
-# Pinned on purpose. Without a version two builds on the same day can end up
-# with two different CLIs. Bump it when you want a newer one.
-ARG CLAUDE_CODE_VERSION=2.1.278
+# Defaults to the newest CLI. The installer and "claude-bridge rebuild" look up
+# the current version number and pass it in, so a rebuild really gets a new one.
+ARG CLAUDE_CODE_VERSION=latest
 
-# Claude Code looks for git and ripgrep at startup, even with every file tool
-# switched off. ca-certificates is for the HTTPS calls it makes.
+# Claude Code needs git and ripgrep at startup, even with the file tools off.
 RUN apt-get update \
   && apt-get install -y --no-install-recommends git ripgrep ca-certificates \
   && rm -rf /var/lib/apt/lists/*
@@ -19,8 +17,7 @@ WORKDIR /app
 COPY package.json ./
 COPY src ./src
 
-# Claude Code writes a working directory on first run. Without a writable home
-# the very first request fails on a write error.
+# Claude Code writes into its home on first run.
 RUN mkdir -p /home/node/.claude /data \
   && chown -R node:node /home/node /data /app
 

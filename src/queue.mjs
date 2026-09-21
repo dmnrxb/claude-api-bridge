@@ -8,11 +8,8 @@ export class BusyError extends Error {
   }
 }
 
-/**
- * A small gate in front of the Claude Code processes. Each run holds a slot,
- * everything else waits in line. A VPS with two cores does not want eight of
- * these at once, and a caller waiting forever is worse than a clear 503.
- */
+// A gate in front of the Claude Code processes. Each run holds a slot, the
+// rest wait. Waiting forever is worse than a clear 503.
 export class Gate {
   constructor({ limit = config.maxConcurrent, timeoutMs = config.queueTimeoutMs } = {}) {
     this.limit = limit;

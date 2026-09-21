@@ -3,7 +3,7 @@ services:
     build:
       context: .
       args:
-        CLAUDE_CODE_VERSION: ${CLAUDE_CODE_VERSION:-2.1.278}
+        CLAUDE_CODE_VERSION: ${CLAUDE_CODE_VERSION:-latest}
     image: claude-api-bridge:local
     container_name: claude-api-bridge
     restart: unless-stopped
@@ -12,9 +12,7 @@ services:
       - ./data:/data
     networks:
       - bridge
-    # Bound to localhost by default. The installer changes BRIDGE_BIND when you
-    # pick a setup that needs it, and drops the mapping entirely when Caddy
-    # sits in front.
+    # Localhost by default. Caddy mode drops the mapping entirely.
     ports:
       - "${BRIDGE_BIND:-127.0.0.1}:${BRIDGE_PORT:-8787}:8787"
     logging:

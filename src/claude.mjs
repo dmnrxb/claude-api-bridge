@@ -4,25 +4,20 @@ import { config } from './config.mjs';
 import { log } from './log.mjs';
 import { redact } from './secrets.mjs';
 
-// Build the argument list for one Claude Code run.
-//
-// Two tool lists, and both are needed. The deny list is what must never run,
-// even if someone widens the allow list later. The allow list is what may run
-// without asking: without it Claude Code asks for permission in headless mode,
-// gets no answer, and then tells the caller it was not allowed to search.
+// Both tool lists matter. Deny is the hard stop. Without the allow list the
+// CLI asks for permission, gets no answer, and says it could not search.
 export function buildArgs({ model, system, stream }, c = config) {
   const args = ['-p', '--model', model];
 
   args.push('--output-format', stream ? 'stream-json' : 'json');
   if (stream) {
-    // Without these two, stream-json emits the whole answer as one event.
+    // Without these, stream-json emits the answer as one event.
     args.push('--verbose', '--include-partial-messages');
   }
   if (c.allowedTools.length) args.push('--allowed-tools', ...c.allowedTools);
   if (c.disallowedTools.length) args.push('--disallowed-tools', ...c.disallowedTools);
 
-  // Replaces Claude Code's own system prompt rather than adding to it, which
-  // takes the coding harness out of a plain chat.
+  // Replaces Claude Code's own system prompt instead of adding to it.
   if (system) args.push('--system-prompt', system);
 
   return args;
@@ -36,8 +31,7 @@ const ACCOUNT_FAILURES = [
   { re: /overloaded|529/i, reason: 'upstream overloaded' },
 ];
 
-// Did this run fail because of the account, or because of the request? Only
-// the first kind is worth retrying on another account.
+// Was it the account's fault? Only then is another account worth a try.
 export function classifyFailure(text) {
   if (!text) return null;
   for (const { re, reason } of ACCOUNT_FAILURES) {
@@ -63,13 +57,8 @@ export class ClaudeError extends Error {
   }
 }
 
-/**
- * Run Claude Code once.
- *
- * `onDelta` is called with each piece of text as it arrives. It is only used
- * when `stream` is set; otherwise the whole answer comes back at the end.
- * Resolves with { text, usage, model }.
- */
+// Run Claude Code once. With `stream`, `onDelta` gets each piece of text as it
+// arrives. Resolves with { text, usage, model }.
 export async function runClaude({
   model, system, prompt, stream = false, token, signal, onDelta,
 }, { c = config, spawn = nodeSpawn } = {}) {
@@ -80,9 +69,9 @@ export async function runClaude({
     env: {
       ...process.env,
       CLAUDE_CODE_OAUTH_TOKEN: token,
-      // Keep the CLI from phoning home about anything we did not ask for.
+      // No traffic we did not ask for.
       CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: '1',
-      // The container gives the node user a writable home; the CLI needs it.
+      // The CLI needs a writable home.
       HOME: process.env.HOME ?? '/home/node',
     },
   });
@@ -117,7 +106,7 @@ export async function runClaude({
       return;
     }
 
-    // Non-streaming runs report the answer once, on the assistant message.
+    // Without streaming the answer arrives once, on the assistant message.
     if (event.type === 'assistant' && !stream) {
       for (const block of event.message?.content ?? []) {
         if (block.type === 'text' && block.text) text += block.text;
@@ -133,7 +122,7 @@ export async function runClaude({
         failure ??= new ClaudeError(redact(message), { accountFailure: classifyFailure(message) });
         return;
       }
-      // The json format puts the finished answer here.
+      // The json format puts the answer here.
       if (!text && typeof event.result === 'string') text = event.result;
     }
   };
@@ -184,8 +173,7 @@ export async function runClaude({
   return { text, usage, model };
 }
 
-// stdout arrives in arbitrary chunks; the stream-json format is one JSON
-// object per line, so the tail has to be carried over.
+// One JSON object per line, but a chunk can end in the middle of one.
 function readLines(stream, onLine) {
   return new Promise((resolve) => {
     let buffer = '';

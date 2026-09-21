@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Thin wrapper around the container. Everything it does not handle itself is
-# passed to the CLI inside the container, so a change takes effect at once.
+# Wrapper around the container. Anything it does not handle itself goes to the
+# CLI inside the container.
 set -euo pipefail
 
 DIR="${CLAUDE_BRIDGE_DIR:-/opt/claude-api-bridge}"
@@ -35,9 +35,29 @@ in_container() {
   compose exec -T "$SERVICE" node src/cli.mjs "$@"
 }
 
+# Newest published Claude Code, unless .env pins a version.
+cli_version() {
+  local pinned found
+  pinned="$(grep -E '^CLAUDE_CODE_VERSION=' .env 2>/dev/null | cut -d= -f2- || true)"
+  if [ -n "$pinned" ] && [ "$pinned" != "latest" ]; then
+    printf '%s' "$pinned"
+    return
+  fi
+  found="$(curl -fsSL https://registry.npmjs.org/@anthropic-ai/claude-code/latest 2>/dev/null \
+    | grep -o '"version":"[^"]*"' | head -1 | cut -d'"' -f4)"
+  printf '%s' "${found:-latest}"
+}
+
+build() {
+  local version
+  version="$(cli_version)"
+  echo "Building with Claude Code $version" >&2
+  compose build --pull --build-arg "CLAUDE_CODE_VERSION=$version"
+}
+
 read_token() {
-  # A token typed into a terminal should not end up in the shell history or on
-  # screen. A token piped in is used as is.
+  # Typed in, it should not reach the shell history or the screen. Piped in, it
+  # is used as is.
   if [ -t 0 ]; then
     echo "Paste the token from 'claude setup-token' (input is hidden):" >&2
     local token
@@ -63,7 +83,7 @@ case "$cmd" in
     compose restart
     ;;
   rebuild)
-    compose build --pull
+    build
     compose up -d
     ;;
   update)
@@ -72,7 +92,7 @@ case "$cmd" in
     else
       echo "Not a git checkout, skipping the pull. Rebuilding what is here." >&2
     fi
-    compose build --pull
+    build
     compose up -d
     compose ps
     ;;
@@ -102,8 +122,9 @@ case "$cmd" in
     fi
     ;;
   version|-v|--version)
-    echo "claude-bridge wrapper, installation at $DIR"
-    in_container version
+    echo "installation  $DIR"
+    printf 'bridge        %s\n' "$(in_container version)"
+    printf 'claude code   %s\n' "$(compose exec -T "$SERVICE" claude --version 2>/dev/null || echo '?')"
     ;;
   help|-h|--help)
     cat <<'USAGE'
@@ -111,7 +132,7 @@ claude-bridge - manage the Claude API Bridge
 
 Container
   start | stop | restart      run, halt, restart the service
-  rebuild                     rebuild the image and restart
+  rebuild                     rebuild with the newest Claude Code, restart
   update                      pull the repo, rebuild, restart
   logs [-f] [--tail=N]        container logs
   ps | health | shell         state, health endpoint, a shell inside

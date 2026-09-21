@@ -129,7 +129,10 @@ claude-bridge accounts list
 claude-bridge accounts token work          replace an expired token
 claude-bridge accounts reset               clear every cooldown
 
-claude-bridge start | stop | restart | logs -f | update
+claude-bridge start | stop | restart | logs -f
+claude-bridge rebuild                      rebuild with the newest Claude Code
+claude-bridge update                       pull the repo, then rebuild
+claude-bridge version                      bridge and Claude Code versions
 ```
 
 Changes take effect at once. The command and the service share the same
@@ -153,6 +156,23 @@ By key
   ---------  --------  ---------  -------  ------
   n8n             812  3,201,004  204,881  $27.90
   open-webui      392  1,711,876  113,123  $13.32
+```
+
+## Staying current
+
+The image is built with whatever Claude Code is newest at build time. The
+version number is resolved on the host first, so the build stays repeatable and
+`claude-bridge rebuild` really does fetch a new release.
+
+```bash
+claude-bridge rebuild
+claude-bridge version
+```
+
+To stay on one version, put it in `.env`:
+
+```
+CLAUDE_CODE_VERSION=2.1.278
 ```
 
 ## Several accounts
@@ -193,7 +213,7 @@ Settings live in `.env` next to `docker-compose.yml`. Change a value and run
 | `BRIDGE_ACCOUNT_COOLDOWN_MS` | `900000` | how long a failed account is parked |
 | `BRIDGE_RETENTION_DAYS` | `90` | how long request rows are kept, `0` keeps them |
 | `BRIDGE_LOG_LEVEL` | `info` | `error`, `warn`, `info` or `debug` |
-| `CLAUDE_CODE_VERSION` | pinned | which CLI the image is built with |
+| `CLAUDE_CODE_VERSION` | `latest` | which CLI to build with, or a version to pin |
 
 ## Security
 
@@ -248,8 +268,7 @@ No dependencies. Node 24 or newer, because `node:sqlite` is what the storage
 uses.
 
 ```bash
-npm test                          # offline, no network and no Claude account needed
-node scripts/build-diagram.mjs    # regenerate the diagram in docs/
+npm test    # offline, no network and no Claude account needed
 ```
 
 Running the service locally:

@@ -1,5 +1,4 @@
-# Used when the installer sets up TLS itself. Caddy takes 80 and 443, the
-# bridge publishes nothing.
+# TLS handled here. Caddy takes 80 and 443, the bridge publishes nothing.
 services:
   bridge:
     ports: !reset []

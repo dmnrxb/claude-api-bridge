@@ -36,9 +36,8 @@ always come from a trusted source. The defences in place:
 
 ## Keeping it current
 
-The Claude Code version is pinned in the Dockerfile so two builds produce the
-same thing. That also means it does not update itself. Bump
-`CLAUDE_CODE_VERSION` in `.env` now and then and run:
+The image is built with the newest Claude Code, but it does not update itself
+afterwards. Run this now and then:
 
 ```bash
 claude-bridge rebuild

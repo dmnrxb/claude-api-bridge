@@ -28,15 +28,6 @@ jobs:
         with:
           dockerfile: Dockerfile
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-
-      - name: the diagram matches its generator
-        run: |
-          node scripts/build-diagram.mjs
-          git diff --exit-code docs/
-
   build:
     runs-on: ubuntu-latest
     steps:

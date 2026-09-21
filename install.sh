@@ -3,9 +3,6 @@
 #
 #   sudo ./install.sh                  from a checkout
 #   curl -fsSL <raw url> | sudo bash   from the repository
-#
-# Answer a few questions and it writes the configuration, builds the image,
-# starts the service and installs the claude-bridge command.
 set -euo pipefail
 
 REPO_URL="${REPO_URL:-https://github.com/dominikdev/claude-api-bridge.git}"
@@ -224,18 +221,27 @@ fi
 # -- build and start -------------------------------------------------------
 
 step "Building the image"
-info "this pulls node:24-slim and the pinned Claude Code CLI, give it a minute"
+
+# The version number is resolved here rather than left as "latest", so the
+# build is repeatable and a rebuild picks up a new release.
+CLI_VERSION="$(grep -E '^CLAUDE_CODE_VERSION=' .env | cut -d= -f2- || true)"
+if [ -z "$CLI_VERSION" ] || [ "$CLI_VERSION" = "latest" ]; then
+  CLI_VERSION="$(curl -fsSL https://registry.npmjs.org/@anthropic-ai/claude-code/latest 2>/dev/null \
+    | grep -o '"version":"[^"]*"' | head -1 | cut -d'"' -f4)"
+  CLI_VERSION="${CLI_VERSION:-latest}"
+fi
+info "node:24-slim and Claude Code $CLI_VERSION, give it a minute"
 
 COMPOSE=(docker compose -f docker-compose.yml)
 [ "$PROFILE" = "caddy" ] && COMPOSE+=(-f docker-compose.caddy.yml)
 
-"${COMPOSE[@]}" build --pull
+"${COMPOSE[@]}" build --pull --build-arg "CLAUDE_CODE_VERSION=$CLI_VERSION"
 "${COMPOSE[@]}" up -d
 
 install -m 0755 bin/claude-bridge "$BIN_PATH"
 info "installed $BIN_PATH"
 
-# Wait for the health endpoint before touching the database through the CLI.
+# Wait for the service before touching the database through the CLI.
 for _ in $(seq 1 30); do
   if curl -fsS "http://127.0.0.1:$BRIDGE_PORT/health" >/dev/null 2>&1; then break; fi
   sleep 1

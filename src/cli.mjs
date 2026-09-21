@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 
 import { config } from './config.mjs';
@@ -95,8 +96,7 @@ function count(value) {
   return Number(value ?? 0).toLocaleString('en-US');
 }
 
-// Plain column layout. No dependency, no colour, reads the same in a terminal
-// and in a copied log.
+// Plain columns. Reads the same in a terminal and in a copied log.
 function table(headers, rows) {
   if (rows.length === 0) return '  (nothing yet)\n';
   const widths = headers.map((h, i) => Math.max(h.length, ...rows.map((r) => String(r[i] ?? '').length)));
@@ -106,11 +106,25 @@ function table(headers, rows) {
   return [line(headers), `  ${widths.map((w) => '-'.repeat(w)).join('  ')}`, ...body].join('\n') + '\n';
 }
 
+// Piping into head or less closes stdout early. That is not an error.
+process.stdout.on('error', (err) => {
+  if (err.code === 'EPIPE') process.exit(0);
+  throw err;
+});
+
 function out(text) {
   process.stdout.write(text);
 }
 
 // -- commands --------------------------------------------------------------
+
+function claudeVersion() {
+  try {
+    return execFileSync(config.claudeBin, ['--version'], { encoding: 'utf8', timeout: 5000 }).trim();
+  } catch {
+    return 'not found';
+  }
+}
 
 function cmdStatus(store) {
   const accounts = store.listAccounts();
@@ -121,6 +135,7 @@ function cmdStatus(store) {
   out('\nClaude API Bridge\n\n');
   out(table(['setting', 'value'], [
     ['port', config.port],
+    ['claude code', claudeVersion()],
     ['default model', config.defaultModel],
     ['unknown model', config.unknownModel === 'map' ? 'mapped to the default' : 'rejected with 400'],
     ['max concurrent', config.maxConcurrent],

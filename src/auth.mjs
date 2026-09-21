@@ -15,9 +15,7 @@ export class RateLimitError extends Error {
   }
 }
 
-// OpenAI clients send `Authorization: Bearer`. Anthropic clients send
-// `x-api-key`. Both are accepted so the bridge drops into either kind of tool
-// without a wrapper.
+// OpenAI clients send Bearer, Anthropic clients x-api-key. Both work.
 export function readKey(headers) {
   const bearer = headers.authorization ?? headers.Authorization;
   if (typeof bearer === 'string') {
@@ -45,8 +43,7 @@ export function authenticate(store, headers) {
 const MINUTE = 60_000;
 const DAY = 86_400_000;
 
-// Both windows roll: rpm counts the last 60 seconds, rpd the last 24 hours.
-// No midnight reset to be surprised by.
+// Both windows roll: the last 60 seconds and the last 24 hours.
 export function enforceLimits(store, key) {
   if (key.rpm) {
     const used = store.countKeyRequests(key.id, MINUTE);

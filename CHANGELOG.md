@@ -21,5 +21,5 @@ First release.
   `claude-bridge stats`.
 - `install.sh`, which asks whether a reverse proxy is already there, sets up
   Caddy if not, and installs the `claude-bridge` command.
-- Docker image on Node 24 with a pinned Claude Code CLI, running as a non root
-  user.
+- Docker image on Node 24, built with the newest Claude Code, running as a non
+  root user.

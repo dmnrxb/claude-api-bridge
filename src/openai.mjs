@@ -1,9 +1,6 @@
 import { randomUUID } from 'node:crypto';
 
-// Model names the bridge answers for. The left side is what a caller may send,
-// the right side is what goes into `claude --model`. Claude Code resolves the
-// short aliases itself; the full ids are here so an OpenAI client that pins a
-// version still works.
+// What a caller may send, and what goes into `claude --model`.
 export const MODELS = {
   'claude-opus-5': 'claude-opus-5',
   'claude-sonnet-5': 'claude-sonnet-5',
@@ -38,9 +35,7 @@ export function errorBody(message, { type = 'invalid_request_error', code = null
   return { error: { message, type, param, code } };
 }
 
-// OpenAI allows content to be a string or an array of parts. Anything that is
-// not text cannot survive the trip through a command line prompt, so it is
-// rejected rather than dropped.
+// Content is a string or an array of parts. Only text survives a prompt.
 function textOf(content, where) {
   if (typeof content === 'string') return content;
   if (content === null || content === undefined) return '';
@@ -61,8 +56,7 @@ export function parseChatRequest(body, { defaultModel, unknownModel = 'map' } = 
     throw new BadRequest('request body must be a JSON object');
   }
 
-  // Features Claude Code cannot express. Better a clear 400 than a response
-  // that quietly ignores half the request.
+  // Claude Code cannot express these. A clear 400 beats a silent half answer.
   if (body.tools || body.functions || body.tool_choice || body.function_call) {
     throw new BadRequest(
       'tool and function calling is not supported, the bridge runs Claude Code which has its own tools',
@@ -123,14 +117,12 @@ export function parseChatRequest(body, { defaultModel, unknownModel = 'map' } = 
     system: systemParts.join('\n\n'),
     prompt: flattenPrompt(turns),
     stream: body.stream === true,
-    // Read and carried into the stats so usage stays comparable, but the CLI
-    // has no flag for it.
+    // Kept for the stats. The CLI has no flag for it.
     maxTokens: Number.isInteger(body.max_tokens) ? body.max_tokens : null,
   };
 }
 
-// One request, one prompt, one Claude Code run. Nothing is kept between calls,
-// so the whole history has to travel in the prompt.
+// Nothing is kept between calls, so the whole history goes into the prompt.
 export function flattenPrompt(turns) {
   if (turns.length === 1 && turns[0].role === 'user') return turns[0].text;
   const lines = turns.map((t) => `${t.role === 'user' ? 'Human' : 'Assistant'}: ${t.text}`);

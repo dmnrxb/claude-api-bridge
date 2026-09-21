@@ -8,15 +8,9 @@ export class NoAccountError extends Error {
   }
 }
 
-/**
- * Run `attempt` against the account pool.
- *
- * Accounts are tried in priority order, least recently used first within the
- * same priority. If a run fails in a way that points at the account rather
- * than the request, that account is parked for a while and the next one gets
- * the same request. A failure that is not the account's fault stops right
- * there, because retrying it would only burn another account.
- */
+// Try `attempt` on one account after another, best first. A failure that is
+// the account's fault parks it and moves on. Any other failure stops here,
+// because a retry would only burn a second account.
 export async function withAccount(store, attempt, { c = config } = {}) {
   const candidates = store.availableAccounts();
 
