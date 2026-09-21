@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1284 648" width="1284" height="648" role="img" aria-label="How Claude API Bridge handles a request">
+<defs>
+<marker id="head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#6e7681"/>
+</marker>
+</defs>
+<rect width="1284" height="648" fill="#0d1117"/>
+<text x="16" y="86" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#8b949e" text-anchor="start">POST /v1/chat/completions</text>
+<rect x="16" y="100" width="164" height="120" rx="10" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+<text x="36" y="132" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#e6edf3" text-anchor="start">Your tools</text>
+<text x="36" y="156" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#8b949e" text-anchor="start">n8n</text>
+<text x="36" y="174" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#8b949e" text-anchor="start">Open WebUI</text>
+<text x="36" y="192" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#8b949e" text-anchor="start">curl</text>
+<text x="36" y="210" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#8b949e" text-anchor="start">any OpenAI SDK</text>
+<rect x="224" y="100" width="156" height="120" rx="10" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+<text x="244" y="132" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#e6edf3" text-anchor="start">Reverse proxy</text>
+<text x="244" y="156" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#8b949e" text-anchor="start">nginx, Traefik or</text>
+<text x="244" y="174" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#8b949e" text-anchor="start">the bundled Caddy</text>
+<text x="244" y="200" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#8b949e" text-anchor="start">TLS ends here</text>
+<line x1="184" y1="145" x2="218" y2="145" stroke="#6e7681" stroke-width="1.5" marker-end="url(#head)"/>
+<line x1="218" y1="171" x2="184" y2="171" stroke="#6e7681" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#head)"/>
+<line x1="384" y1="145" x2="414" y2="145" stroke="#6e7681" stroke-width="1.5" marker-end="url(#head)"/>
+<line x1="414" y1="171" x2="384" y2="171" stroke="#6e7681" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#head)"/>
+<text x="16" y="254" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#8b949e" text-anchor="start">A solid arrow carries the request,</text>
+<text x="16" y="272" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#8b949e" text-anchor="start">a dashed one carries the answer back.</text>
+<rect x="420" y="24" width="580" height="584" rx="14" fill="#161b22" stroke="#30363d" stroke-width="1.5" stroke-dasharray="7 5"/>
+<text x="436" y="48" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#8b949e" text-anchor="start">Docker</text>
+<rect x="440" y="64" width="540" height="520" rx="12" fill="#0d1117" stroke="#484f58" stroke-width="1.5"/>
+<text x="462" y="92" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#e6edf3" text-anchor="start">claude-api-bridge</text>
+<rect x="488" y="108" width="470" height="46" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<circle cx="510" cy="131" r="11" fill="#388bfd"/>
+<text x="510" y="135" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#0d1117" text-anchor="middle">1</text>
+<text x="532" y="128" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#e6edf3" text-anchor="start">Check the key</text>
+<text x="532" y="144" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#8b949e" text-anchor="start">x-api-key or Bearer, matched against a stored hash</text>
+<path d="M 719 157 L 727 157 L 723 163 Z" fill="#6e7681"/>
+<rect x="488" y="166" width="470" height="46" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<circle cx="510" cy="189" r="11" fill="#388bfd"/>
+<text x="510" y="193" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#0d1117" text-anchor="middle">2</text>
+<text x="532" y="186" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#e6edf3" text-anchor="start">Apply the limits</text>
+<text x="532" y="202" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#8b949e" text-anchor="start">per key, requests per minute and per day</text>
+<path d="M 719 215 L 727 215 L 723 221 Z" fill="#6e7681"/>
+<rect x="488" y="224" width="470" height="46" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<circle cx="510" cy="247" r="11" fill="#388bfd"/>
+<text x="510" y="251" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#0d1117" text-anchor="middle">3</text>
+<text x="532" y="244" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#e6edf3" text-anchor="start">Translate the request</text>
+<text x="532" y="260" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#8b949e" text-anchor="start">the message history is flattened into one prompt</text>
+<path d="M 719 273 L 727 273 L 723 279 Z" fill="#6e7681"/>
+<rect x="488" y="282" width="470" height="46" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<circle cx="510" cy="305" r="11" fill="#388bfd"/>
+<text x="510" y="309" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#0d1117" text-anchor="middle">4</text>
+<text x="532" y="302" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#e6edf3" text-anchor="start">Pick an account</text>
+<text x="532" y="318" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#8b949e" text-anchor="start">priority order, the next one if this one is out</text>
+<path d="M 719 331 L 727 331 L 723 337 Z" fill="#6e7681"/>
+<rect x="488" y="340" width="470" height="46" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<circle cx="510" cy="363" r="11" fill="#388bfd"/>
+<text x="510" y="367" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#0d1117" text-anchor="middle">5</text>
+<text x="532" y="360" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#e6edf3" text-anchor="start">Run claude -p</text>
+<text x="532" y="376" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#8b949e" text-anchor="start">file and shell tools off, web search on, own process</text>
+<path d="M 719 389 L 727 389 L 723 395 Z" fill="#6e7681"/>
+<rect x="488" y="398" width="470" height="46" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<circle cx="510" cy="421" r="11" fill="#388bfd"/>
+<text x="510" y="425" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#0d1117" text-anchor="middle">6</text>
+<text x="532" y="418" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#e6edf3" text-anchor="start">Answer</text>
+<text x="532" y="434" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#8b949e" text-anchor="start">JSON, or server sent events while the text arrives</text>
+<line x1="470" y1="131" x2="470" y2="474" stroke="#6e7681" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#head)"/>
+<line x1="470" y1="131" x2="488" y2="131" stroke="#6e7681" stroke-width="1.5" stroke-dasharray="4 3"/>
+<line x1="470" y1="189" x2="488" y2="189" stroke="#6e7681" stroke-width="1.5" stroke-dasharray="4 3"/>
+<line x1="470" y1="305" x2="488" y2="305" stroke="#6e7681" stroke-width="1.5" stroke-dasharray="4 3"/>
+<line x1="470" y1="421" x2="488" y2="421" stroke="#6e7681" stroke-width="1.5" stroke-dasharray="4 3"/>
+<rect x="462" y="478" width="496" height="76" rx="10" fill="#12233d" stroke="#1f4b7f" stroke-width="1.5"/>
+<text x="484" y="504" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#e6edf3" text-anchor="start">bridge.db</text>
+<text x="484" y="524" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#8b949e" text-anchor="start">API keys, account tokens, one row for every request</text>
+<text x="484" y="542" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#8b949e" text-anchor="start">kept in a volume on the host, survives a rebuild</text>
+<rect x="16" y="478" width="340" height="76" rx="10" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+<text x="36" y="504" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#e6edf3" text-anchor="start">claude-bridge</text>
+<text x="36" y="524" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#8b949e" text-anchor="start">keys add · accounts add · stats · recent</text>
+<text x="36" y="542" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#8b949e" text-anchor="start">runs on the host, no web interface</text>
+<line x1="366" y1="516" x2="452" y2="516" stroke="#6e7681" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#head)" marker-start="url(#head)"/>
+<rect x="1060" y="325" width="200" height="76" rx="10" fill="#2d1e12" stroke="#7d4a1d" stroke-width="1.5"/>
+<text x="1080" y="356" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" font-weight="600" fill="#e6edf3" text-anchor="start">api.anthropic.com</text>
+<text x="1080" y="378" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#8b949e" text-anchor="start">your Claude subscription</text>
+<line x1="962" y1="352" x2="1056" y2="352" stroke="#6e7681" stroke-width="1.5" marker-end="url(#head)"/>
+<line x1="1056" y1="376" x2="962" y2="376" stroke="#6e7681" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#head)"/>
+<text x="1009" y="342" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#8b949e" text-anchor="middle">HTTPS</text>
+<text x="16" y="630" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#8b949e" text-anchor="start">Every request starts its own Claude Code process. Nothing is kept between calls.</text>
+</svg>

@@ -1,0 +1,43 @@
+# Claude API Bridge behind an existing nginx.
+#
+# Drop this location block into a server block that already handles TLS for
+# your domain, or use the whole file as a starting point.
+
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name bridge.example.com;
+
+    ssl_certificate     /etc/letsencrypt/live/bridge.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/bridge.example.com/privkey.pem;
+
+    # Long prompts and long answers. The default of 1m is not enough.
+    client_max_body_size 10m;
+
+    location / {
+        proxy_pass http://127.0.0.1:8787;
+        proxy_http_version 1.1;
+
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # Streaming answers arrive piece by piece. With buffering on, nginx
+        # holds them back and the caller gets everything at once at the end,
+        # which looks like the stream is broken.
+        proxy_buffering off;
+        proxy_cache off;
+
+        # A single answer can take minutes.
+        proxy_read_timeout 600s;
+        proxy_send_timeout 600s;
+    }
+}
+
+# Plain HTTP, redirect to TLS.
+server {
+    listen 80;
+    server_name bridge.example.com;
+    return 301 https://$host$request_uri;
+}

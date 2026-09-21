@@ -1,0 +1,132 @@
+#!/usr/bin/env bash
+# Thin wrapper around the container. Everything it does not handle itself is
+# passed to the CLI inside the container, so a change takes effect at once.
+set -euo pipefail
+
+DIR="${CLAUDE_BRIDGE_DIR:-/opt/claude-api-bridge}"
+SERVICE=bridge
+
+if [ ! -f "$DIR/docker-compose.yml" ]; then
+  echo "claude-bridge: no installation at $DIR" >&2
+  echo "Set CLAUDE_BRIDGE_DIR if you installed somewhere else." >&2
+  exit 1
+fi
+
+cd "$DIR"
+
+COMPOSE_FILES=(-f docker-compose.yml)
+# shellcheck source=/dev/null
+[ -f .bridge-profile ] && . ./.bridge-profile
+[ "${BRIDGE_PROFILE:-}" = "caddy" ] && COMPOSE_FILES+=(-f docker-compose.caddy.yml)
+
+compose() {
+  docker compose "${COMPOSE_FILES[@]}" "$@"
+}
+
+running() {
+  [ -n "$(compose ps -q "$SERVICE" 2>/dev/null)" ]
+}
+
+in_container() {
+  if ! running; then
+    echo "claude-bridge: the container is not running. Start it with: claude-bridge start" >&2
+    exit 1
+  fi
+  compose exec -T "$SERVICE" node src/cli.mjs "$@"
+}
+
+read_token() {
+  # A token typed into a terminal should not end up in the shell history or on
+  # screen. A token piped in is used as is.
+  if [ -t 0 ]; then
+    echo "Paste the token from 'claude setup-token' (input is hidden):" >&2
+    local token
+    read -rs token
+    echo >&2
+    printf '%s' "$token"
+  else
+    cat
+  fi
+}
+
+cmd="${1:-help}"
+[ $# -gt 0 ] && shift
+
+case "$cmd" in
+  start|up)
+    compose up -d
+    ;;
+  stop|down)
+    compose stop
+    ;;
+  restart)
+    compose restart
+    ;;
+  rebuild)
+    compose build --pull
+    compose up -d
+    ;;
+  update)
+    if [ -d .git ]; then
+      git pull --ff-only
+    else
+      echo "Not a git checkout, skipping the pull. Rebuilding what is here." >&2
+    fi
+    compose build --pull
+    compose up -d
+    compose ps
+    ;;
+  logs)
+    if [ $# -eq 0 ]; then
+      compose logs --tail=100 "$SERVICE"
+    else
+      compose logs "$@" "$SERVICE"
+    fi
+    ;;
+  ps)
+    compose ps
+    ;;
+  health)
+    port="$(grep -E '^BRIDGE_PORT=' .env 2>/dev/null | cut -d= -f2)"
+    curl -fsS "http://127.0.0.1:${port:-8787}/health" && echo
+    ;;
+  shell)
+    compose exec "$SERVICE" bash
+    ;;
+  accounts)
+    sub="${1:-list}"
+    if [ "$sub" = "add" ] || [ "$sub" = "token" ]; then
+      read_token | compose exec -T "$SERVICE" node src/cli.mjs accounts "$@"
+    else
+      in_container accounts "$@"
+    fi
+    ;;
+  version|-v|--version)
+    echo "claude-bridge wrapper, installation at $DIR"
+    in_container version
+    ;;
+  help|-h|--help)
+    cat <<'USAGE'
+claude-bridge - manage the Claude API Bridge
+
+Container
+  start | stop | restart      run, halt, restart the service
+  rebuild                     rebuild the image and restart
+  update                      pull the repo, rebuild, restart
+  logs [-f] [--tail=N]        container logs
+  ps | health | shell         state, health endpoint, a shell inside
+
+Service
+  status                      current settings and counts
+  stats [--days N] [--json]   usage over a period
+  recent [-n 20]              the last requests
+  keys ...                    manage API keys
+  accounts ...                manage Claude account tokens
+
+Run "claude-bridge keys" or "claude-bridge accounts" for their options.
+USAGE
+    ;;
+  *)
+    in_container "$cmd" "$@"
+    ;;
+esac

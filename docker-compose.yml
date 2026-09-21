@@ -1,0 +1,28 @@
+services:
+  bridge:
+    build:
+      context: .
+      args:
+        CLAUDE_CODE_VERSION: ${CLAUDE_CODE_VERSION:-2.1.278}
+    image: claude-api-bridge:local
+    container_name: claude-api-bridge
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./data:/data
+    networks:
+      - bridge
+    # Bound to localhost by default. The installer changes BRIDGE_BIND when you
+    # pick a setup that needs it, and drops the mapping entirely when Caddy
+    # sits in front.
+    ports:
+      - "${BRIDGE_BIND:-127.0.0.1}:${BRIDGE_PORT:-8787}:8787"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  bridge:
+    driver: bridge

@@ -1,0 +1,24 @@
+{
+  "name": "claude-api-bridge",
+  "version": "0.1.0",
+  "description": "Serve a personal Claude subscription behind an OpenAI-compatible API",
+  "license": "MIT",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=24"
+  },
+  "bin": {
+    "claude-bridge": "src/cli.mjs"
+  },
+  "scripts": {
+    "start": "node src/server.mjs",
+    "cli": "node src/cli.mjs",
+    "test": "node --test \"test/*.test.mjs\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dominikdev/claude-api-bridge.git"
+  },
+  "dependencies": {}
+}

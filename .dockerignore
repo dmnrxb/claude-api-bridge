@@ -1,0 +1,10 @@
+.git
+.github
+.idea
+node_modules
+data
+docs
+test
+*.md
+.env*
+install.sh
