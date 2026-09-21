@@ -5,7 +5,7 @@
 #   curl -fsSL <raw url> | sudo bash   from the repository
 set -euo pipefail
 
-REPO_URL="${REPO_URL:-https://github.com/dominikdev/claude-api-bridge.git}"
+REPO_URL="${REPO_URL:-https://github.com/dmnrxb/claude-api-bridge.git}"
 INSTALL_DIR="${INSTALL_DIR:-/opt/claude-api-bridge}"
 BIN_PATH="${BIN_PATH:-/usr/local/bin/claude-bridge}"
 ASSUME_YES="${ASSUME_YES:-0}"

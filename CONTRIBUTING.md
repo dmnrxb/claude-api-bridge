@@ -14,7 +14,7 @@ Thanks for looking. This is a small project and it should stay small.
 ## Getting set up
 
 ```bash
-git clone https://github.com/dominikdev/claude-api-bridge.git
+git clone https://github.com/dmnrxb/claude-api-bridge.git
 cd claude-api-bridge
 npm test
 ```

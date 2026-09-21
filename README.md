@@ -39,7 +39,7 @@ login.
 ## Install
 
 ```bash
-git clone https://github.com/dominikdev/claude-api-bridge.git
+git clone https://github.com/dmnrxb/claude-api-bridge.git
 cd claude-api-bridge
 sudo ./install.sh
 ```

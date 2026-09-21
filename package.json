@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dominikdev/claude-api-bridge.git"
+    "url": "git+https://github.com/dmnrxb/claude-api-bridge.git"
   },
   "dependencies": {}
 }
