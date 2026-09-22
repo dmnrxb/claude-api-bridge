@@ -24,7 +24,8 @@ First release.
 - Docker image on Node 24, built with the newest Claude Code, running as a non
   root user.
 - Published image at `ghcr.io/dmnrxb/claude-api-bridge`, rebuilt nightly so it
-  does not fall behind the CLI.
+  does not fall behind the CLI. It carries the `claude-bridge` command, so the
+  image works on its own without the repository.
 
 [unreleased]: https://github.com/dmnrxb/claude-api-bridge/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/dmnrxb/claude-api-bridge/releases/tag/v0.1.0

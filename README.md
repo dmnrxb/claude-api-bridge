@@ -68,23 +68,42 @@ sudo ./install.sh --uninstall
 `install.sh` builds the image on your server. That takes a couple of minutes
 and always gets the newest Claude Code.
 
-If you would rather not build, there is a published image. It is rebuilt every
-night, so it is current but not always newest:
+If you would rather not build, pull the published one. It is rebuilt every
+night, so it is current but not always newest.
 
 ```
 ghcr.io/dmnrxb/claude-api-bridge:latest
 ```
 
-To use it, swap the `build:` block in `docker-compose.yml` for the image:
+You do not need the repository for this. A compose file and a secret are
+enough:
 
 ```yaml
 services:
   bridge:
     image: ghcr.io/dmnrxb/claude-api-bridge:latest
+    restart: unless-stopped
+    environment:
+      BRIDGE_SECRET_KEY: put-the-output-of-openssl-rand-base64-48-here
+    volumes:
+      - ./data:/data
+    ports:
+      - "127.0.0.1:8787:8787"
 ```
 
-Update it with `docker compose pull && docker compose up -d` instead of
-`claude-bridge rebuild`.
+The admin command ships inside the image:
+
+```bash
+# paste the token from "claude setup-token", then press Ctrl-D
+docker compose exec -T bridge claude-bridge accounts add primary
+
+docker compose exec bridge claude-bridge keys add n8n
+docker compose exec bridge claude-bridge stats
+```
+
+Update with `docker compose pull && docker compose up -d`. TLS and the reverse
+proxy are yours to arrange on this route. `install.sh` does both, plus it gives
+you `claude-bridge` as a plain command on the host.
 
 ## The token
 

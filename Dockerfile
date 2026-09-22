@@ -17,9 +17,11 @@ WORKDIR /app
 COPY package.json ./
 COPY src ./src
 
-# Claude Code writes into its home on first run.
+# Claude Code writes into its home on first run. The symlink makes
+# "docker exec <container> claude-bridge stats" work without the repository.
 RUN mkdir -p /home/node/.claude /data \
-  && chown -R node:node /home/node /data /app
+  && chown -R node:node /home/node /data /app \
+  && ln -s /app/src/cli.mjs /usr/local/bin/claude-bridge
 
 USER node
 ENV HOME=/home/node \
