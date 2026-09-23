@@ -87,13 +87,18 @@ case "$cmd" in
     compose up -d
     ;;
   update)
-    if [ -d .git ]; then
-      git pull --ff-only
-    else
-      echo "Not a git checkout, skipping the pull. Rebuilding what is here." >&2
+    if [ ! -d .git ]; then
+      echo "claude-bridge: $DIR is not a git checkout, so there is nothing to pull." >&2
+      echo "Run install.sh once more from a fresh clone. Keys, accounts and stats stay." >&2
+      exit 1
     fi
+    git -c safe.directory="$DIR" pull --ff-only
     build
     compose up -d
+    # A new version can bring a new wrapper too.
+    if [ -w "$0" ] && [ "$(realpath "$0")" != "$DIR/bin/claude-bridge" ]; then
+      install -m 0755 bin/claude-bridge "$0"
+    fi
     compose ps
     ;;
   logs)

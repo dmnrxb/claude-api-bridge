@@ -126,8 +126,12 @@ if [ -n "$SCRIPT_DIR" ] && [ -f "$SCRIPT_DIR/Dockerfile" ] && [ -f "$SCRIPT_DIR/
   if [ "$SCRIPT_DIR" != "$INSTALL_DIR" ]; then
     info "copying from $SCRIPT_DIR"
     mkdir -p "$INSTALL_DIR"
-    tar -C "$SCRIPT_DIR" --exclude=.git --exclude=data --exclude=node_modules -cf - . \
-      | tar -C "$INSTALL_DIR" -xf -
+    # .git comes along so "claude-bridge update" can pull later. The state of an
+    # existing install stays where it is.
+    tar -C "$SCRIPT_DIR" \
+      --exclude=data --exclude=node_modules --exclude=caddy \
+      --exclude=.env --exclude='.env.backup.*' --exclude=.bridge-profile \
+      -cf - . | tar -C "$INSTALL_DIR" --no-same-owner -xf -
   else
     info "already in $INSTALL_DIR"
   fi

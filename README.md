@@ -200,6 +200,26 @@ By key
   open-webui      392  1,711,876  113,123  $13.32
 ```
 
+## Updating
+
+Installed with `install.sh`:
+
+```bash
+sudo claude-bridge update
+```
+
+That pulls the repository, rebuilds with the newest Claude Code and restarts.
+Keys, accounts and statistics stay, they live in `data/` and `.env`.
+
+Using the published image:
+
+```bash
+docker compose pull && docker compose up -d
+```
+
+Installed before 0.1.2? Run `install.sh` once more from a fresh clone. Older
+versions left out what `update` needs to pull. Nothing else changes.
+
 ## Staying current
 
 The image is built with whatever Claude Code is newest at build time. The
