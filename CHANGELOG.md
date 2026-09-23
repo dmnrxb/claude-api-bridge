@@ -6,6 +6,15 @@ All notable changes are listed here. The format follows
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-09-23
+
+### Fixed
+
+- A fresh install crashed in a loop with "unable to open database file". The
+  data folder belonged to root, the container runs as uid 1000.
+- `install.sh` stops with the container logs when the service does not come
+  up, instead of failing later with an unrelated error.
+
 ## [0.1.2] - 2026-09-23
 
 ### Fixed
@@ -44,7 +53,8 @@ First release.
 - Published image at `ghcr.io/dmnrxb/claude-api-bridge`, rebuilt nightly so it
   does not fall behind the CLI.
 
-[unreleased]: https://github.com/dmnrxb/claude-api-bridge/compare/v0.1.2...HEAD
+[unreleased]: https://github.com/dmnrxb/claude-api-bridge/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/dmnrxb/claude-api-bridge/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/dmnrxb/claude-api-bridge/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/dmnrxb/claude-api-bridge/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/dmnrxb/claude-api-bridge/releases/tag/v0.1.0
