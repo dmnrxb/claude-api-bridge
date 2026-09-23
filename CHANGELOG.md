@@ -6,6 +6,17 @@ All notable changes are listed here. The format follows
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-09-23
+
+### Fixed
+
+- `claude-bridge update` never pulled new code when `install.sh` ran from a
+  checkout, because the copy left out `.git`. It now keeps it, and `update`
+  says so clearly instead of quietly rebuilding the old version.
+- Running `install.sh` again no longer overwrites `.env` with one from the
+  checkout.
+- `update` also refreshes the `claude-bridge` command itself.
+
 ## [0.1.1] - 2026-09-22
 
 ### Added
@@ -33,6 +44,7 @@ First release.
 - Published image at `ghcr.io/dmnrxb/claude-api-bridge`, rebuilt nightly so it
   does not fall behind the CLI.
 
-[unreleased]: https://github.com/dmnrxb/claude-api-bridge/compare/v0.1.1...HEAD
+[unreleased]: https://github.com/dmnrxb/claude-api-bridge/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/dmnrxb/claude-api-bridge/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/dmnrxb/claude-api-bridge/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/dmnrxb/claude-api-bridge/releases/tag/v0.1.0
