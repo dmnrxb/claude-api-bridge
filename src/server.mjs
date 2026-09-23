@@ -241,7 +241,17 @@ export function start() {
     process.exit(1);
   }
 
-  const store = openStore();
+  let store;
+  try {
+    store = openStore();
+  } catch (err) {
+    log.error('cannot open the database', {
+      dir: config.dataDir,
+      error: err.message,
+      hint: `the directory must be writable by uid ${process.getuid?.() ?? '?'}`,
+    });
+    process.exit(1);
+  }
   const gate = new Gate();
   const server = createServer(createApp({ store, gate }));
 

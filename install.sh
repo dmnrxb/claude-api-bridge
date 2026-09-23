@@ -146,6 +146,8 @@ fi
 
 cd "$INSTALL_DIR"
 mkdir -p data
+# The container runs as the node user, uid 1000, and has to write here.
+chown 1000:1000 data
 
 # -- settings --------------------------------------------------------------
 
@@ -249,10 +251,20 @@ install -m 0755 bin/claude-bridge "$BIN_PATH"
 info "installed $BIN_PATH"
 
 # Wait for the service before touching the database through the CLI.
+HEALTHY=0
 for _ in $(seq 1 30); do
-  if curl -fsS "http://127.0.0.1:$BRIDGE_PORT/health" >/dev/null 2>&1; then break; fi
+  if curl -fsS "http://127.0.0.1:$BRIDGE_PORT/health" >/dev/null 2>&1; then
+    HEALTHY=1
+    break
+  fi
   sleep 1
 done
+
+if [ "$HEALTHY" != "1" ]; then
+  warn "The container did not come up. Its last log lines:"
+  "${COMPOSE[@]}" logs --tail=20 bridge >&2 || true
+  die "fix the problem above and run install.sh again, your settings are kept"
+fi
 
 # -- account ---------------------------------------------------------------
 
