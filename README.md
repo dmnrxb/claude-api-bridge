@@ -39,13 +39,18 @@ login.
 ## Install
 
 ```bash
-git clone https://github.com/dmnrxb/claude-api-bridge.git
-cd claude-api-bridge
+sudo git clone https://github.com/dmnrxb/claude-api-bridge.git /opt/claude-api-bridge
+cd /opt/claude-api-bridge
 sudo ./install.sh
 ```
 
-The installer asks four things: the port, how the service should be reached,
-your Claude token, and nothing else. It writes the configuration, builds the
+Everything lives in `/opt/claude-api-bridge`: the code, `.env` and the database
+in `data/`. The installer adds the `claude-bridge` command in `/usr/local/bin`.
+Cloned somewhere else? That works too, the installer copies the project to
+`/opt` and the clone can be deleted afterwards.
+
+The installer asks three things: the port, how the service should be reached,
+and your Claude token. It writes the configuration, builds the
 image, starts the container and installs the `claude-bridge` command.
 
 For how it is reached you get three options:
