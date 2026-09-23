@@ -55,3 +55,18 @@ jobs:
           docker logs ci
           docker rm -f ci
           test -n "${healthy:-}"
+
+  # The whole installer on a fresh machine, as root, the way a user runs it.
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: install.sh runs start to finish
+        run: sudo ASSUME_YES=1 PROXY_MODE=1 ./install.sh
+      - name: the service answers
+        run: curl -fsS http://127.0.0.1:8787/health
+      - name: the command works
+        run: sudo claude-bridge status
+      - name: logs on failure
+        if: failure()
+        run: sudo docker logs claude-api-bridge --tail 50 || true
